@@ -3,14 +3,15 @@ output_headers = ('Timestamp', 'Server', 'Network Interface', 'Network Bandwidth
 OUTPUT = "{} | {} | {} | {}"
 
 def parsecsv(csvpath):
+	"""open (csvpath) and parse contents into 2D array of rows (minus the header row)"""
 	with open(csvpath) as f:
 		contents = f.read().strip()
-		data = [line.split(',') for line in contents.split('\n')]
-		data.pop(0)	# remove header line
-	return data
+		rows = [line.split(',') for line in contents.split('\n')]
+		rows.pop(0)		# remove header row
+	return rows			# [[r1c1, r1c2, ...], [r2c1, r2c2, ...], ... ]
 
 def get_bandwidth_values():
-	# use built-in hash function to record unique bandwith value for each distinct server and interface combo
+	"""use built-in hash function to record bandwith value for unique "{server}{interface_name}" hash"""
 	for server, interface_name, bandwidth_value  in parsecsv('bandwidth.csv'):
 		bandwidth_hash = hash(server+interface_name)
 		bandwidth[ bandwidth_hash ] = bandwidth_value
